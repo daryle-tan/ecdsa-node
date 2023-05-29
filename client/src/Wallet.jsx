@@ -1,9 +1,9 @@
 import server from "./server";
-import { secp256k1 } from "ethereum-cryptography"
+// import { secp256k1 } from "ethereum-cryptography"
 
 function Wallet({ address, setAddress, balance, setBalance }) {
-    const privateKey = "6b911fd37cdf5c81d4c0adb1ab7fa822ed253ab0ad9aa18d77257c88b29b718e"
-    const messageHash = "a33321f98e4ff1c283c76998f14f57447545d339b3db534c6d886decb4209f28"
+    // const privateKey = "6b911fd37cdf5c81d4c0adb1ab7fa822ed253ab0ad9aa18d77257c88b29b718e"
+    // const messageHash = "a33321f98e4ff1c283c76998f14f57447545d339b3db534c6d886decb4209f28"
 
     async function onChange(evt) {
         const address = evt.target.value

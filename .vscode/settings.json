@@ -1,0 +1,5 @@
+{
+  "javascript.format.semicolons": "insert",
+  "prettier.quoteProps": "consistent",
+  "typescript.format.semicolons": "insert"
+}

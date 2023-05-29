@@ -11,7 +11,7 @@ label {
   letter-spacing: 0.05rem;
   font-size: .8em;
   font-weight: 400;
-  color: #222;
+  color: rgb(34, 34, 34);
 }
 
 .app {
@@ -51,16 +51,18 @@ input {
 
 .button {
   background-color: #319795;
-  border-radius: 0.125rem;
+  border-radius: 0.25rem;
   padding: 10px 20px;
   color: white;
   display: inline-flex;
+  justify-content: center;
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 400;
   font-size: .9em;
   &:hover {
     cursor: pointer;
+    color: orange;
   }
 }
 
