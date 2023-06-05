@@ -2,30 +2,37 @@ const express = require("express")
 const app = express()
 const cors = require("cors")
 const port = 3042
-
+const { secp256k1 } = require("ethereum-cryptography/secp256k1")
+const { keccak256 } = require("ethereum-cryptography/keccak")
+const { utf8ToBytes } = require("ethereum-cryptography/utils")
+const { toHex } = require("ethereum-cryptography/utils")
+const { privateKey, verify } = require("./scripts/generate.js")
 app.use(cors())
 app.use(express.json())
 
-const SignatureA = {
-  r: 14577910505676929926903948251972835869176658993134963041398650178609211102191n,
-  s: 36022735392018251639246785440370807053944303459194084836880485298224814759428n,
-  recovery: 0,
-}
-const SignatureB = {
-  r: 96630564109171761486155863627084873075021487617020900238780338849003102166327n,
-  s: 51507165226726329296088082906339298239772670823809262792884660626565563390127n,
-  recovery: 1,
-}
-const SignatureC = {
-  r: 8980617620088675527166497958905945738346341085382283711796382170554157318477n,
-  s: 49812109871402060279054213554412517293956283094622263860074448898995030586389n,
-  recovery: 1,
-}
+const Signatures = [
+  {
+    r: 94364742712474410657721364005829535895884533462490868884322574407822871934478n,
+    s: 56937489658167472067286214571138782148154088119713360249695979378959973644202n,
+    recovery: 0,
+  },
+  {
+    r: 62802852249173954293691868759369674227841824747631886107818116297700431327834n,
+    s: 26766775288116130759995070973755479039680101090897479559088731761803624066527n,
+    recovery: 0,
+  },
+  {
+    r: 40538391346557833411387913541892596605600878528944142789642431270805052917780n,
+    s: 18665304577317768524769574753215531839598001990793581771199225682245072693057n,
+    recovery: 0,
+  },
+]
+console.log(Signatures[0].r)
 
 const balances = {
-  "02e4b3e61a46f118a9b91226cf0bc6c2ab073a89339604611e057857d864745a29": 100, // privatekey f09a45a70c827e6846ee3f75b6d3bfe3c8e4531e08a9d183c3ca112ff0e152a8
-  "034bc72012b03f2bcb07d6a047646d6782a20a9d850baf095cd058d92080f52b4d": 50, // privatekey 5eb08cc82ccb44688214cc917d30afe52af600d1af0aac8e1f8a7f71c4561a85
-  "03733f061877698966a3be8afc850866551e7bf5cbbc81b8065697c6441732f948": 75, // privatekey 4047278fac59eff4ab9b7564498b37f28ef1371e6e22c8a1538c686de4dce847
+  "02977f05f99c95b596571bf02cb7ba5ada4b35dfb5ed8717bf0c1744d8d4b130d8": 100, // privatekey 090f21927f33f2c4562123725473ccb403f5f9395617ac5c018cbb04057c85a6
+  "02b34ab87f19f51db897012fea9c558da46a3bd143b2e05714c48be863a9f76218": 50, // privatekey e567c775d80ef7748e91a56e27a0622c16780a2b6af8aed8327bdb7507552a62
+  "023f44afdfc118fbd9f93823516cbd3bdc89d9f5ec369b6a1dce131d26de9bbeba": 75, // privatekey e0b63cc159a015753dc40aac9cfd587f1df49d4a30ed65710b79a4d911ac0632
 }
 
 app.get("/balance/:address", (req, res) => {
@@ -37,26 +44,25 @@ app.get("/balance/:address", (req, res) => {
 app.post("/send", (req, res) => {
   // TODO: get a signature from the client side application
   // recover the public address from the signature
-  const { sender, recipient, amount } = req.body
+  const { sender, recipient, amount, r, s, recovery, publicKey } = req.body
+  const message = "Send amount!"
+  const hashedMessage = keccak256(utf8ToBytes(message))
 
-  // const message = {
-  //   sender: sender,
-  //   recipient: recipient,
-  //   amount: amount,
-  // }
-  // console.log("hi")
-
-  setInitialBalance(sender)
-  setInitialBalance(recipient)
-
-  if (balances[sender] < amount) {
-    res.status(400).send({ message: "Not enough funds!" })
-  } else {
-    balances[sender] -= amount
-    balances[recipient] += amount
-    res.send({ balance: balances[sender] })
+  if (verify) {
+    setInitialBalance(sender)
+    setInitialBalance(recipient)
+    console.log(r)
+    console.log("verified!", verify(Signatures[0], hashedMessage, publicKey))
+    if (balances[sender] < amount) {
+      res.status(400).send({ message: "Not enough funds!" })
+    } else {
+      balances[sender] -= amount
+      balances[recipient] += amount
+      res.send({ balance: balances[sender] })
+    }
   }
 })
+
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}!`)

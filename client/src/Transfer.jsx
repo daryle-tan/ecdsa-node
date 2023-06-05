@@ -8,11 +8,16 @@ import { utf8ToBytes } from "ethereum-cryptography/utils"
 function Transfer({ address, setBalance }) {
   const [sendAmount, setSendAmount] = useState("");
   const [recipient, setRecipient] = useState("");
+  const [r, setR] = useState()
+  const [s, setS] = useState()
+  const [recovery, setRecover] = useState()
+  const [publicKey, setPublicKey] = useState()
+  const [message, setMessage] = useState()
 
-  const setValue = (setter) => (evt) => setter(evt.target.value);
+  const setValue = (setter) => (evt) => setter(evt.target.value)
 
   async function transfer(evt) {
-    evt.preventDefault();
+    evt.preventDefault()
 
     try {
       const {
@@ -21,10 +26,15 @@ function Transfer({ address, setBalance }) {
         sender: address,
         amount: parseInt(sendAmount),
         recipient,
-      });
-      setBalance(balance);
+        r,
+        s,
+        recovery,
+        publicKey,
+      })
+      setBalance(balance)
+      window.alert("Transaction Successful!")
     } catch (ex) {
-      alert(ex.response.data.message);
+      alert(ex.response.data.message)
     }
   }
 
@@ -50,9 +60,34 @@ function Transfer({ address, setBalance }) {
         ></input>
       </label>
 
+      {/* <label>
+        Message
+        <input
+          placeholder="Type a message"
+          value={message}
+          onChange={setValue(setMessage)}
+        ></input>
+      </label> */}
+
+      <label>
+        Signed Message
+        <input placeholder="r" value={r} onChange={setValue(setR)}></input>
+        <input placeholder="s" value={s} onChange={setValue(setS)}></input>
+        <input
+          placeholder="Recovery"
+          value={recovery}
+          onChange={setValue(setRecover)}
+        ></input>
+        <input
+          placeholder="Public Key"
+          value={publicKey}
+          onChange={setValue(setPublicKey)}
+        ></input>
+      </label>
+
       <input type="submit" className="button" value="Transfer" />
     </form>
-  );
+  )
 }
 
 export default Transfer;

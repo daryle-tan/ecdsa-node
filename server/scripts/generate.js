@@ -34,10 +34,16 @@ function Message() {
 }
 
 // create a signature
-function signMessage(msg) {
+function signature(msg) {
   return secp256k1.sign(hashMessage(msg), privateKey)
 }
+// verify signature
+const verify = (signMessage, hashMessage, publicKey) => {
+  console.log("verified")
+  return secp256k1.verify(signMessage, hashMessage, publicKey)
+}
+// console.log("Private Key:", privateKey)
+// console.log("Public Key:", publicKey)
+// console.log(signMessage("Send amount!"))
 
-console.log("Private Key:", privateKey)
-console.log("Public Key:", publicKey)
-console.log(signMessage("message"))
+module.exports = { privateKey, signature, verify }
